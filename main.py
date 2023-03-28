@@ -34,17 +34,20 @@ def get_link(text: str, page_count: int):
                 headers={'user-agent': ua.random}
             )
             soup = BeautifulSoup(data.content, 'lxml')
-            print(soup.find_all('div', attrs={'class': 'serp-item'}))
+            # print(soup.find_all('div', attrs={'class': 'serp-item'}))
             for item in soup.find_all('div', attrs={'class': 'serp-item'}):
                 print(item.find('a', attrs={'class': 'serp-item__title'}).text.strip())
                 title = item.find('a', attrs={'class': 'serp-item__title'})
                 link = title.get('href')
                 print(link)
-                price = item.find('span', attrs={'class': 'bloko-header-section-3'}).text
-                print(price)
+                try:
+                    price = item.find('span', attrs={'class': 'bloko-header-section-3'}).text
+                    print(price)
+                except:
+                    print('Не указана З/П')
 
-                # company = item.find('div', attrs={'class': 'vacancy-serp-item-company'}).text
-                # print(company)
+                company = item.find('div', attrs={'class': 'vacancy-serp-item-company'}).text
+                print(company)
                 # info = item.find('div', attrs={'class': 'g-user-content'}).text
                 # print(info,'\n')
 
