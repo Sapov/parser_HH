@@ -76,12 +76,18 @@ def get_resume(link='https://voronezh.hh.ru/vacancy/77722681'):
     soup = BeautifulSoup(data.content, 'lxml')
     try:
         name = soup.find(attrs={'class': 'vacancy-title'}).text
-        salary = soup.find(attrs={'class': 'bloko-header-section-2 bloko-header-section-2_lite'})
+        salary = soup.find(attrs={'class': 'bloko-header-section-2 bloko-header-section-2_lite'}).text
+        description = soup.find(attrs={'class': 'vacancy-description'}).text
 
-        info = soup.find(attrs={'class': 'bloko-columns-row'}).text
-        # info1 = soup.find_all('p')
+        response = {
+            'name': name,
+            'salary': salary,
+            'description': description
+
+        }
         print(name)
         print(salary)
+        print(description)
 
     except:
         return
