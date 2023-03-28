@@ -38,36 +38,30 @@ def get_link(text: str, page_count: int):
             for item in soup.find_all('div', attrs={'class': 'serp-item'}):
                 # print(item.find('a', attrs={'class': 'serp-item__title'}).text.strip())
                 title = item.find('a', attrs={'class': 'serp-item__title'})
-                link = title.get('href').split('?')[0]
-                title = item.find('a', attrs={'class': 'serp-item__title'}).text.strip()
-                print('[TITLE]:', title)
-                print('[LINK]:', link)
-                try:
-                    price = item.find('span', attrs={'class': 'bloko-header-section-3'}).text
-                    print('[PRICE]:', price)
-                except:
-                    print('Не указана З/П')
-
-                company = item.find('div', attrs={'class': 'vacancy-serp-item-company'}).text
-                print('[COMPANY]:', company, '\n')
-
-                info = item.find('div', attrs={'class': 'g-user-content'}).text
-                print(info, '\n')
-
+                # link = title.get('href').split('?')[0]
+                yield title.get('href').split('?')[0]
+                # title = item.find('a', attrs={'class': 'serp-item__title'}).text.strip()
+                # print('[TITLE]:', title)
+                # print('[LINK]:', link)
+                # try:
+                #     price = item.find('span', attrs={'class': 'bloko-header-section-3'}).text
+                #     print('[PRICE]:', price)
+                # except:
+                #     print('Не указана З/П')
+                #
+                # company = item.find('div', attrs={'class': 'vacancy-serp-item-company'}).text
+                # print('[COMPANY]:', company, '\n')
+                #
+                # info = item.find('div', attrs={'class': 'g-user-content'}).text
+                # print(info, '\n')
 
         # g-user-content
 
         except Exception as e:
             print(f"{e}")
-        time.sleep(1)
-        # print(page)
-        # print(soup.find_all('div', attrs={'class': 'serp-item__title'}))
 
 
-# <a class="serp-item__title" data-qa="serp-item__title" target="_blank" href="https://hh.ru/vacancy/72893267?from=vacancy_search_list&amp;query=Python">Руководитель бизнес-анализа</a>
-
-
-def get_resume(link='https://voronezh.hh.ru/vacancy/77722681'):
+def get_vacancy(link='https://voronezh.hh.ru/vacancy/77722681'):
     ua = fake_useragent.UserAgent()
     data = requests.get(
         url=link,
@@ -75,26 +69,42 @@ def get_resume(link='https://voronezh.hh.ru/vacancy/77722681'):
     )
     soup = BeautifulSoup(data.content, 'lxml')
     try:
-        name = soup.find(attrs={'class': 'vacancy-title'}).text
-        salary = soup.find(attrs={'class': 'bloko-header-section-2 bloko-header-section-2_lite'}).text
-        description = soup.find(attrs={'class': 'vacancy-description'}).text
+        title = soup.find(attrs={'class': 'vacancy-title'}).text
+        t2 = soup.find('a', attrs={'class': 'serp-item__title'}).text.strip()
 
+        salary = soup.find(attrs={'class': 'bloko-header-section-2 bloko-header-section-2_lite'}).text
+        description = soup.find(attrs={'class': 'vacancy-description'}).text.strip()[:200]
+        description = ' '.join(description.split()) # Удаляем мусор знаки переноса, пробелы
+        company = soup.find('div', attrs={'class': 'vacancy-serp-item-company'}).text
         response = {
-            'name': name,
+            'name': title,
+            'link': link,
+            'company': company,
             'salary': salary,
+
             'description': description
 
         }
-        print(name)
+        print(title)
+        print(t2)
+
+        print(link)
+        print('COMPANY: ', company)
         print(salary)
-        print(description)
+        print(description, '\n')
 
     except:
         return
+    return response
 
 
 if __name__ == '__main__':
-    # st = 'python'
-    # count_page = num_page(st)
-    # get_link(st, count_page)
-    get_resume()
+    data = []
+    st = 'python'
+    count_page = num_page(st)
+    get_link(st, count_page)
+    for link in get_link(st, count_page):
+        data.append(get_vacancy(link))
+        time.sleep(1)
+        with open('data.json', 'w', encoding='utf-8') as file:
+            json.dump(data, file, indent=4, ensure_ascii=False)
