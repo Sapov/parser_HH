@@ -21,7 +21,7 @@ def num_page(text: str) -> int:
                 'span').text)
     except:
         return
-    print(page_count)  # выводим количество страниц
+    print('Количество страниц: ', page_count)  # выводим количество страниц
     return page_count
 
 
@@ -76,18 +76,21 @@ def get_vacancy(link='https://voronezh.hh.ru/vacancy/77722681'):
         description = soup.find(attrs={'class': 'vacancy-description'}).text.strip()[:200]
         description = ' '.join(description.split()) # Удаляем мусор знаки переноса, пробелы
         company = soup.find('div', attrs={'class': 'vacancy-serp-item-company'}).text
+        vacancy_description = soup.find('p', attrs={'class': 'vacancy-description-list-item'}).text
+
+
         response = {
-            'name': title,
+            'title': t2,
             'link': link,
+            'vacancy_description':vacancy_description,
             'company': company,
             'salary': salary,
-
             'description': description
 
         }
         print(title)
         print(t2)
-
+        print(vacancy_description)
         print(link)
         print('COMPANY: ', company)
         print(salary)
