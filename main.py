@@ -6,6 +6,7 @@ import json
 
 
 def num_page(text: str) -> int:
+    ''' Парсим пангинацию'''
     ua = fake_useragent.UserAgent()  # генерим новый user-agent
     data = requests.get(
         url=f'https://hh.ru/search/vacancy?text={text}&area=1&page=1',
@@ -34,28 +35,9 @@ def get_link(text: str, page_count: int):
                 headers={'user-agent': ua.random}
             )
             soup = BeautifulSoup(data.content, 'lxml')
-            # print(soup.find_all('div', attrs={'class': 'serp-item'}))
             for item in soup.find_all('div', attrs={'class': 'serp-item'}):
-                # print(item.find('a', attrs={'class': 'serp-item__title'}).text.strip())
                 title = item.find('a', attrs={'class': 'serp-item__title'})
-                # link = title.get('href').split('?')[0]
                 yield title.get('href').split('?')[0]
-                # title = item.find('a', attrs={'class': 'serp-item__title'}).text.strip()
-                # print('[TITLE]:', title)
-                # print('[LINK]:', link)
-                # try:
-                #     price = item.find('span', attrs={'class': 'bloko-header-section-3'}).text
-                #     print('[PRICE]:', price)
-                # except:
-                #     print('Не указана З/П')
-                #
-                # company = item.find('div', attrs={'class': 'vacancy-serp-item-company'}).text
-                # print('[COMPANY]:', company, '\n')
-                #
-                # info = item.find('div', attrs={'class': 'g-user-content'}).text
-                # print(info, '\n')
-
-        # g-user-content
 
         except Exception as e:
             print(f"{e}")
