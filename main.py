@@ -92,8 +92,6 @@ if __name__ == '__main__':
     for link in get_link(st, count_page):
         data.append(get_vacancy(link))
         time.sleep(1)
-        # with open('data.json', 'w', encoding='utf-8') as file:
-        #     json.dump(data, file, indent=4, ensure_ascii=False)
 
         response = get_vacancy(link)
 
