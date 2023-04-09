@@ -34,6 +34,20 @@ class Database:
         except:
             print('ERROR')
 
+    def select_experience(self):
+        with self.connection:
+            self.cursor.execute(f'''SELECT * FROM hh WHERE vacancy_description = "Требуемый опыт работы: не требуется"''')
+            records = self.cursor.fetchall()
+            print("Вывод ID ", id)
+            for row in records:
+                print("ID:", row[0])
+                print("Title:", row[1])
+                print("Link:", row[2])
+                print("Experience:", row[3])
+                print("Company:", row[4])
+                print("Selery:", row[5])
+                print("Description:", row[6], end="\n\n")
 
-# if __name__ == '__main__':
-#     Database(db).add_table()
+if __name__ == '__main__':
+    # Database(db).add_table()
+    Database(db).select_experience()
