@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 import fake_useragent
 import time
 import json
+import db
+from db import Database
 
 
 def num_page(text: str) -> int:
@@ -13,7 +15,7 @@ def num_page(text: str) -> int:
         headers={'user-agent': ua.random}
     )
     if data.status_code != 200:  # проверяем ответ от сервера
-        return
+        return 'Сервер не отвечает'
     soup = BeautifulSoup(data.content, 'lxml')
     # находим количество страниц
     try:
@@ -56,15 +58,14 @@ def get_vacancy(link='https://voronezh.hh.ru/vacancy/77722681'):
 
         salary = soup.find(attrs={'class': 'bloko-header-section-2 bloko-header-section-2_lite'}).text
         description = soup.find(attrs={'class': 'vacancy-description'}).text.strip()[:200]
-        description = ' '.join(description.split()) # Удаляем мусор знаки переноса, пробелы
+        description = ' '.join(description.split())  # Удаляем мусор знаки переноса, пробелы
         company = soup.find('div', attrs={'class': 'vacancy-serp-item-company'}).text
         vacancy_description = soup.find('p', attrs={'class': 'vacancy-description-list-item'}).text
-
 
         response = {
             'title': t2,
             'link': link,
-            'vacancy_description':vacancy_description,
+            'vacancy_description': vacancy_description,
             'company': company,
             'salary': salary,
             'description': description
@@ -91,5 +92,9 @@ if __name__ == '__main__':
     for link in get_link(st, count_page):
         data.append(get_vacancy(link))
         time.sleep(1)
-        with open('data.json', 'w', encoding='utf-8') as file:
-            json.dump(data, file, indent=4, ensure_ascii=False)
+        # with open('data.json', 'w', encoding='utf-8') as file:
+        #     json.dump(data, file, indent=4, ensure_ascii=False)
+
+        response = get_vacancy(link)
+
+        Database('2h.db').add_base(response)
