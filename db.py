@@ -20,17 +20,17 @@ class Database:
             company TEXT,
             salary TEXT,
             description TEXT,
-            add_date datetime
+            add_date TEXT
             );''')
 
     def add_base(self, response: dict):
         try:
             with self.connection:
                 return self.cursor.execute(f"""INSERT INTO hh
-                              (title, link, salary, vacancy_description, company, description)
+                              (title, link, salary, vacancy_description, company, description, add_date)
                               VALUES
                               ('{response['title']}', '{response['link']}', '{response['salary']}', '{response['vacancy_description']}', 
-                              '{response['company']}', '{response['description']}');""")
+                              '{response['company']}', '{response['description']}', '{response['vacancy_cretion']}');""")
         except:
             print('ERROR')
 
@@ -49,5 +49,6 @@ class Database:
                 print("Description:", row[6], end="\n\n")
 
 if __name__ == '__main__':
-    # Database(db).add_table()
-    Database(db).select_experience()
+
+    Database(db).add_table()
+    # Database(db).select_experience()

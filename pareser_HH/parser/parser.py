@@ -3,8 +3,16 @@ from bs4 import BeautifulSoup
 import fake_useragent
 import time
 import json
-import db
-from db import Database
+
+from .models import Parser
+
+
+# import db
+# from db import Database
+
+def del_table():
+    pars = Parser.objects.all()
+    pars.delete()
 
 
 def num_page(text: str) -> int:
@@ -63,7 +71,6 @@ def get_vacancy(link='https://voronezh.hh.ru/vacancy/77722681'):
         vacancy_description = soup.find('p', attrs={'class': 'vacancy-description-list-item'}).text
         vacancy_cretion = soup.find('p', attrs={'class': 'vacancy-creation-time-redesigned'}).text
 
-
         response = {
             'title': t2,
             'link': link,
@@ -71,9 +78,14 @@ def get_vacancy(link='https://voronezh.hh.ru/vacancy/77722681'):
             'company': company,
             'salary': salary,
             'description': description,
-            'vacancy_cretion' : vacancy_cretion
+            'vacancy_cretion': vacancy_cretion
 
         }
+
+        # добавляем в базу django
+        Parser.objects.create(title=t2, link=link, vacancy_description=vacancy_description, company=company,
+                              salary=salary, description=description, add_date=vacancy_cretion)
+
         print(title)
         print(vacancy_cretion)
 
@@ -89,15 +101,20 @@ def get_vacancy(link='https://voronezh.hh.ru/vacancy/77722681'):
     return response
 
 
-if __name__ == '__main__':
-    # data = []
-    st = 'python'
+def check():
+    '''проверка если запись уже есть пропускаем'''
+
+
+def main(st: str):
+    del_table()
     count_page = num_page(st)
     get_link(st, count_page)
     for link in get_link(st, count_page):
-        # data.append(get_vacancy(link))
-
         response = get_vacancy(link)
 
-        Database('2h.db').add_base(response)
+        # Database('2h.db').add_base(response)
         time.sleep(1)
+
+
+if __name__ == '__main__':
+    main('python')

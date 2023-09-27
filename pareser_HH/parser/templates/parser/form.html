@@ -1,0 +1,9 @@
+{% block content %}
+<H1>{{title}}</H1>
+<form action ='{% url "search_form" %}' method="POST">
+{% csrf_token %}
+{{ form.as_p }}
+      <button type="submit">Найти</button>
+</form>
+<a href="list/">результат</a>
+{% endblock %}

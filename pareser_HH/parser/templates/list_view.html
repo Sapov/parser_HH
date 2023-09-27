@@ -1,0 +1,31 @@
+{% block content %}
+
+    <h2>Список файлов: </h2>
+    <table>
+        <thead>
+           <th>Id</th><th>Вакансия</th><th>Link</th><th>Опыт:</th>
+           <th>Адрес</th><th>Зарплата</th><th>Описание</th><th>Дата публикации</th><th></th>
+       </thead>
+        {% for product in object_list %}
+        <tr>
+            <td>{{ product.id }}</td>
+           <td>{{ product.title }}</td>
+            <td><a href="{{product.link}}">Link</a></td>
+
+            <td>{{ product.vacancy_description }}</td>
+            <td>{{ product.company }}</td>
+<!--            <td>{{ product.resolution }}</td>-->
+<!--            <td>{{ product.color_model }}</td>-->
+            <td>{{ product.salary }}</td>
+            <td>{{ product.description }}</td>
+            <td>{{ product.add_date }}</td>
+
+
+            <td><a href="edit/{{product.id}}">Изменить</a>
+                <a href="delete/{{product.id}}">Удалить</a>
+                <a href="calc/{{product.id}}">Посчитать</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
